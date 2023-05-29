@@ -56,12 +56,10 @@ def run(playwright: Playwright) -> None:
         money_info = page.query_selector("ul.information").inner_text()
         money_info: str = money_info.split("\n")
         user_name = money_info[0]
-        money_info: int = int(money_info[2].replace(",", ""))
+        money_info: int = int(money_info[2].replace(",", "").replace("원", ""))
         hook_slack(f"로그인 사용자: {user_name}, 예치금: {money_info}")
-        # ele = page.query_selector("html")
-        # hook_slack(f"테스트: {page.content()}")
 
-        # 예치금 잔액 부족 미리 exception
+        # # 예치금 잔액 부족 미리 exception
         # if 1000 * COUNT > money_info:
         #     raise Exception(
         #         "예치금이 부족합니다! 충전해주세요! - https://dhlottery.co.kr/payment.do?method=payment"
@@ -75,8 +73,7 @@ def run(playwright: Playwright) -> None:
         # page.click("text=자동번호발급")
 
         # # 구매할 개수를 선택
-        # # Select 1
-        # page.select_option("select", str(COUNT))
+        # page.select_option("select", str(COUNT))  # Select 1
         # page.click("text=확인")
         # page.click('input:has-text("구매하기")')  # Click input:has-text("구매하기")
         # time.sleep(2)

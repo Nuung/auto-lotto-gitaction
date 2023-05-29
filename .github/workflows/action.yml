@@ -39,6 +39,6 @@ jobs:
           wget https://chromedriver.storage.googleapis.com/100.0.4896.20/chromedriver_linux64.zip
           unzip ./chromedriver_linux64.zip
 
-      - name: Run!
+      - name: Run for buying Lotto!
         run: |
           python ./buy_lotto.py ${{secrets.USER_ID}} ${{secrets.USER_PW}} ${{secrets.SLACK_BOT_TOKEN}} ${{secrets.SLACK_CHANNEL}} ${{secrets.BUY_COUNT}}
