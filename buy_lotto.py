@@ -56,7 +56,7 @@ def run(playwright: Playwright) -> None:
         # money_info: str = money_info.split("\n")[1]
         # money_info: int = int(money_info.replace(",", ""))
         # hook_slack(f"예치금: {money_info}")
-        ele = page.query_selector("div.top_menu")
+        ele = page.query_selector("html")
         hook_slack(f"테스트: {ele}")
 
         # 예치금 잔액 부족 미리 exception

@@ -36,8 +36,8 @@
 
 ## STACK
 - python
-    - selenium (chrome driver)
+    - Playwright & selenium (chrome driver)
     - requests
     - playwright
-- lint: flask8 and black
+- lint: flask8 & black
 - github action (action.yml)
