@@ -1,6 +1,6 @@
 import sys
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from requests import post, Response
 from playwright.sync_api import Playwright, sync_playwright
@@ -18,8 +18,13 @@ COUNT = sys.argv[5]
 
 
 def hook_slack(message: str) -> Response:
+    now_utc = datetime.utcnow()
+    korea_timezone = timedelta(hours=9)
+    now_korea = now_utc + korea_timezone
+    korea_time_str = now_korea.strftime("%Y-%m-%d %H:%M:%S")
+
     payload = {
-        "text": f"> {datetime.now()} *로또 자동 구매 봇 알림* \n {message}",
+        "text": f"> {korea_time_str} *로또 자동 구매 봇 알림* \n {message}",
         "channel": SLACK_CHANNEL,
     }
     headers = {
