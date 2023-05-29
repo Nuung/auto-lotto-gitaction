@@ -3,7 +3,8 @@
 # Buying Lottery by Github Actions
 > ***매주 토요일 KST 08:50 에 동행 복권 로또 구매***
 - https://dhlottery.co.kr/ 동행복권 홈페이지
-- https://velog.io/@king/githubactions-lotto 참고한 벨로그
+- https://velog.io/@king/githubactions-lotto 원작자분 벨로그입니다!
+    - 해당 레포는 원작 소스 코드 기반으로 (1)public 하게 사용할 수 있게, (2) slack hook (3) 여타 info check 첨가 정도가 추가가 되었습니다.
 - public 으로 공유할 수 있게 모든 민감 정보 action secrets 값으로 관리
 - 예치금 필요함!
 - slack bot을 통해 slack noti (hook) 전달함

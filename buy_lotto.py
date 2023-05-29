@@ -52,16 +52,18 @@ def run(playwright: Playwright) -> None:
         time.sleep(5)
 
         # 로그인 이후 예치금 알림
-        money_info = page.query_selector("li.money").inner_text()
-        money_info: str = money_info.split("\n")[1]
-        money_info: int = int(money_info.replace(",", ""))
-        hook_slack(f"예치금: {money_info}")
+        # money_info = page.query_selector("li.money").inner_text()
+        # money_info: str = money_info.split("\n")[1]
+        # money_info: int = int(money_info.replace(",", ""))
+        # hook_slack(f"예치금: {money_info}")
+        ele = page.query_selector('form[name="frmLogin"]')
+        hook_slack(f"테스트: {ele}")
 
         # 예치금 잔액 부족 미리 exception
-        if 1000 * COUNT > money_info:
-            raise Exception(
-                "예치금이 부족합니다! 충전해주세요! - https://dhlottery.co.kr/payment.do?method=payment"
-            )
+        # if 1000 * COUNT > money_info:
+        #     raise Exception(
+        #         "예치금이 부족합니다! 충전해주세요! - https://dhlottery.co.kr/payment.do?method=payment"
+        #     )
 
         page.goto(url="https://ol.dhlottery.co.kr/olotto/game/game645.do")
         # "비정상적인 방법으로 접속하였습니다. 정상적인 PC 환경에서 접속하여 주시기 바랍니다." 우회하기
