@@ -51,13 +51,15 @@ def run(playwright: Playwright) -> None:
 
         time.sleep(5)
 
-        # 로그인 이후 예치금 알림
-        # money_info = page.query_selector("li.money").inner_text()
-        # money_info: str = money_info.split("\n")[1]
-        # money_info: int = int(money_info.replace(",", ""))
-        # hook_slack(f"예치금: {money_info}")
+        # 로그인 이후 기본 정보 체크 & 예치금 알림
+        page.goto("https://dhlottery.co.kr/common.do?method=main")
+        money_info = page.query_selector("ul.information").inner_text()
+        money_info: str = money_info.split("\n")
+        user_name = money_info[0]
+        money_info: int = int(money_info[2].replace(",", ""))
+        hook_slack(f"로그인 사용자: {user_name}, 예치금: {money_info}")
         # ele = page.query_selector("html")
-        hook_slack(f"테스트: {page.content()}")
+        # hook_slack(f"테스트: {page.content()}")
 
         # 예치금 잔액 부족 미리 exception
         # if 1000 * COUNT > money_info:
