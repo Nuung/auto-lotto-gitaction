@@ -59,33 +59,33 @@ def run(playwright: Playwright) -> None:
         money_info: int = int(money_info[2].replace(",", "").replace("원", ""))
         hook_slack(f"로그인 사용자: {user_name}, 예치금: {money_info}")
 
-        # # 예치금 잔액 부족 미리 exception
-        # if 1000 * COUNT > money_info:
-        #     raise Exception(
-        #         "예치금이 부족합니다! 충전해주세요! - https://dhlottery.co.kr/payment.do?method=payment"
-        #     )
+        # 예치금 잔액 부족 미리 exception
+        if 1000 * COUNT > money_info:
+            raise Exception(
+                "예치금이 부족합니다! 충전해주세요! - https://dhlottery.co.kr/payment.do?method=payment"
+            )
 
-        # page.goto(url="https://ol.dhlottery.co.kr/olotto/game/game645.do")
-        # # "비정상적인 방법으로 접속하였습니다. 정상적인 PC 환경에서 접속하여 주시기 바랍니다." 우회하기
-        # page.locator("#popupLayerAlert").get_by_role("button", name="확인").click()
-        # print(page.content())
+        page.goto(url="https://ol.dhlottery.co.kr/olotto/game/game645.do")
+        # "비정상적인 방법으로 접속하였습니다. 정상적인 PC 환경에서 접속하여 주시기 바랍니다." 우회하기
+        page.locator("#popupLayerAlert").get_by_role("button", name="확인").click()
+        print(page.content())
 
-        # page.click("text=자동번호발급")
+        page.click("text=자동번호발급")
 
-        # # 구매할 개수를 선택
-        # page.select_option("select", str(COUNT))  # Select 1
-        # page.click("text=확인")
-        # page.click('input:has-text("구매하기")')  # Click input:has-text("구매하기")
-        # time.sleep(2)
-        # page.click(
-        #     'text=확인 취소 >> input[type="button"]'
-        # )  # Click text=확인 취소 >> input[type="button"]
-        # page.click('input[name="closeLayer"]')
-        # # assert page.url == "https://el.dhlottery.co.kr/game/TotalGame.jsp?LottoId=LO40"
+        # 구매할 개수를 선택
+        page.select_option("select", str(COUNT))  # Select 1
+        page.click("text=확인")
+        page.click('input:has-text("구매하기")')  # Click input:has-text("구매하기")
+        time.sleep(2)
+        page.click(
+            'text=확인 취소 >> input[type="button"]'
+        )  # Click text=확인 취소 >> input[type="button"]
+        page.click('input[name="closeLayer"]')
+        # assert page.url == "https://el.dhlottery.co.kr/game/TotalGame.jsp?LottoId=LO40"
 
-        # hook_slack(
-        #     f"{COUNT}개 복권 구매 성공! - 확인하러가기: https://dhlottery.co.kr/myPage.do?method=notScratchListView"
-        # )
+        hook_slack(
+            f"{COUNT}개 복권 구매 성공! - 확인하러가기: https://dhlottery.co.kr/myPage.do?method=notScratchListView"
+        )
 
         # End of Selenium
         context.close()

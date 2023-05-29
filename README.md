@@ -11,11 +11,13 @@
 
 ## GETTING START
 
-1. fork를 과감하게 한다.
+1. `fork`를 한다!
 
-2. fork한 repo를 `git clone` 한다.
+2. `fork`한 repo를 `git clone` 한다.
 
-3. slack bot 세팅은 알아서 하고, 사용하지 않는다면 그냥 주석처리해도 된다.
+3. slack bot 세팅은 아래 글 참조, 사용하지 않는다면 그냥 주석처리해도 된다.
+    - https://yunwoong.tistory.com/129 최신글 참고 추천!
+    - slack python SDK를 사용하는 것이 아니라 restAPI Http call을 한다.
 
 4. `action.yml` 파일을 보면 gitaction 시크릿값을 python run 인자로 넘길때 사용하고 있다. 즉 시크릿값만 세팅하면 된다.
 
@@ -33,6 +35,10 @@
 6. 위 세팅 완료 후 test를 위해 `action.yml` 에서 `on: [push]` 로 바꾸고 push를 해보자
 
 ![](./img3.png)
+
+## TOBE
+- 구매한 로또 번호와 상세 사항 slack noti
+- 발표난 당첨 번호와 자동 비교 work flow 추가
 
 ## STACK
 - python
