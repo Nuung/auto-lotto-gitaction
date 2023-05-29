@@ -1,0 +1,22 @@
+[tool.black]
+line-length = 88
+target-version = ['py37', 'py38']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # The following are specific to Black, you probably don't want those.
+  | blib2to3
+  | tests/data
+  | profiling
+)/
+'''
+# We use preview style for formatting Black itself. If you
+# want stable formatting across releases, you should keep
+# this off.
+preview = true
+
+[project]
+name = "black"
+description = "The uncompromising code formatter."
+requires-python = ">=3.7"
+authors = [{ name = "Nuung", email = "hyeon.wo.dev@gmail.com" }]
