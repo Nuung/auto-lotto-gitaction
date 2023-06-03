@@ -61,6 +61,10 @@ def run(playwright: Playwright) -> None:
         result_info = result_info.split("이전")[0].replace("\n", " ")
         hook_slack(f"로또 결과: {result_info}")
 
+        # page.goto("https://www.dhlottery.co.kr/myPage.do?method=lottoBuyListView")
+        # /myPage.do?method=lottoBuyList&searchStartDate=&searchEndDate=&lottoId=&nowPage=1
+        # table에서 tr 모두 가져와서 당첨 여부 체크
+
         # End of Selenium
         context.close()
         browser.close()
