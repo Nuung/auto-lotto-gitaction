@@ -65,7 +65,7 @@ def run(playwright: Playwright) -> None:
         hook_slack(f"로그인 사용자: {user_name}, 예치금: {money_info}")
 
         # 예치금 잔액 부족 미리 exception
-        if 1000 * COUNT > money_info:
+        if 1000 * int(COUNT) > money_info:
             raise Exception(
                 "예치금이 부족합니다! 충전해주세요! - https://dhlottery.co.kr/payment.do?method=payment"
             )
