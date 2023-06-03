@@ -24,11 +24,11 @@
 
 4. `action.yml` 파일을 보면 gitaction 시크릿값을 python run 인자로 넘길때 사용하고 있다. 즉 시크릿값만 세팅하면 된다.
 
-![](./img1.png)
+![](./imgs/img1.png)
 
 5. 시크릿값은 아래 사진 참고
 
-![](./img2.png)
+![](./imgs/img2.png)
 
 - slack bot token은 `xoxb` 로 시작하는, bot OAuth token값이다.
 - slack channel 값은 추가한 slack bot을 초대한 그 채널값이 필요하다.
@@ -37,7 +37,7 @@
 
 6. 위 세팅 완료 후 test를 위해 `action.yml` 에서 `on: [push]` 로 바꾸고 push를 해보자
 
-![](./img3.png)
+![](./imgs/img3.png)
 
 - 러닝할 때 구매가능 여부 부터 체크 해야한다! 구매 가능한 시간대가 아니라면 Timeout error가 날 수 있다.
 
