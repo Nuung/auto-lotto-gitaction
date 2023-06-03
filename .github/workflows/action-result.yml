@@ -1,9 +1,9 @@
 name: Check The Result Of Lotto (로또 결과봇)
 
-on: [push]
-# on:
-#   schedule:
-#     - cron: "50 12 * * 6" # UST 기준의 크론. UST 12:50 는 KST 21:50, 매주 토요일 20시 35분경 발표 시작
+# on: [push]
+on:
+  schedule:
+    - cron: "50 12 * * 6" # UST 기준의 크론. UST 12:50 는 KST 21:50, 매주 토요일 20시 35분경 발표 시작
 
 jobs:
   build:
