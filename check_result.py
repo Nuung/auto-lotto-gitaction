@@ -69,3 +69,7 @@ def run(playwright: Playwright) -> None:
         context.close()
         browser.close()
         raise exc
+
+
+with sync_playwright() as playwright:
+    run(playwright)
