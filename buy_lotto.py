@@ -6,13 +6,16 @@ from requests import post, Response
 from playwright.sync_api import Playwright, sync_playwright
 
 RUN_FILE_NAME = sys.argv[0]
+
 # 동행복권 아이디와 패스워드를 설정
 USER_ID = sys.argv[1]
 USER_PW = sys.argv[2]
+
 # SLACK 설정
 SLACK_API_URL = "https://slack.com/api/chat.postMessage"
 SLACK_BOT_TOKEN = sys.argv[3]
 SLACK_CHANNEL = sys.argv[4]
+
 # 구매 개수를 설정
 COUNT = sys.argv[5]
 

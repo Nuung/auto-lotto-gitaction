@@ -1,5 +1,7 @@
 [![Lotto Buy Bot (로또 구매봇)](https://github.com/Nuung/auto-lotto-gitaction/actions/workflows/action.yml/badge.svg?branch=main)](https://github.com/Nuung/auto-lotto-gitaction/actions/workflows/action.yml)
 
+[![Check The Result Of Lotto (로또 결과봇)](https://github.com/Nuung/auto-lotto-gitaction/actions/workflows/action-result.yml/badge.svg?branch=main)](https://github.com/Nuung/auto-lotto-gitaction/actions/workflows/action-result.yml)
+
 # Buying Lottery automatically by Github Actions
 > ***매주 토요일 KST 08:50 에 동행 복권 로또 구매***
 - https://dhlottery.co.kr/ 동행복권 홈페이지
@@ -37,6 +39,9 @@
 ![](./img3.png)
 
 - 러닝할 때 구매가능 여부 부터 체크 해야한다! 구매 가능한 시간대가 아니라면 Timeout error가 날 수 있다.
+
+7. `action-result.yml` 은 이제 발표된 추첨 번호를 slack을 통해 전달해준다. 20시 35분경 발표가 나는 점, 업데이트가 나중에 되는점을 참작해 21시 35분경에 러닝하게 했다.
+
 
 ## TOBE
 - [ ] 구매한 로또 번호와 상세 사항 slack noti
