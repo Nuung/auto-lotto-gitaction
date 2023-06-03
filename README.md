@@ -36,9 +36,11 @@
 
 ![](./img3.png)
 
+- 러닝할 때 구매가능 여부 부터 체크 해야한다! 구매 가능한 시간대가 아니라면 Timeout error가 날 수 있다.
+
 ## TOBE
-- 구매한 로또 번호와 상세 사항 slack noti
-- 발표난 당첨 번호와 자동 비교 work flow 추가
+- [ ] 구매한 로또 번호와 상세 사항 slack noti
+- [x] 발표난 당첨 번호와 자동 비교 work flow 추가 ~~[23.06.03]~~
 
 ## STACK
 - python

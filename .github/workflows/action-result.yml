@@ -1,8 +1,9 @@
-name: Lotto Buy Bot (로또 구매봇)
+name: Check The Result Of Lotto (로또 결과봇)
 
-on:
-  schedule:
-    - cron: "50 23 * * 5" # UST 기준의 크론. UST 23:50 는 KST 08:50
+on: [push]
+# on:
+#   schedule:
+#     - cron: "50 12 * * 6" # UST 기준의 크론. UST 12:50 는 KST 21:50, 매주 토요일 20시 35분경 발표 시작
 
 jobs:
   build:
@@ -38,6 +39,6 @@ jobs:
           wget https://chromedriver.storage.googleapis.com/100.0.4896.20/chromedriver_linux64.zip
           unzip ./chromedriver_linux64.zip
 
-      - name: Run for buying Lotto!
+      - name: Run for checking the result of Lotto!
         run: |
-          python ./buy_lotto.py ${{secrets.USER_ID}} ${{secrets.USER_PW}} ${{secrets.SLACK_BOT_TOKEN}} ${{secrets.SLACK_CHANNEL}} ${{secrets.BUY_COUNT}}
+          python ./check_result.py ${{secrets.USER_ID}} ${{secrets.USER_PW}} ${{secrets.SLACK_BOT_TOKEN}} ${{secrets.SLACK_CHANNEL}} ${{secrets.BUY_COUNT}}
