@@ -1,3 +1,4 @@
+import re
 import sys
 import time
 from datetime import datetime, timedelta
@@ -20,12 +21,15 @@ SLACK_CHANNEL = sys.argv[4]
 COUNT = sys.argv[5]
 
 
-def hook_slack(message: str) -> Response:
+def __get_now() -> datetime:
     now_utc = datetime.utcnow()
     korea_timezone = timedelta(hours=9)
     now_korea = now_utc + korea_timezone
-    korea_time_str = now_korea.strftime("%Y-%m-%d %H:%M:%S")
+    return now_korea
 
+
+def hook_slack(message: str) -> Response:
+    korea_time_str = __get_now().strftime("%Y-%m-%d %H:%M:%S")
     payload = {
         "text": f"> {korea_time_str} *로또 자동 구매 봇 알림* \n {message}",
         "channel": SLACK_CHANNEL,
@@ -39,7 +43,7 @@ def hook_slack(message: str) -> Response:
 
 
 def run(playwright: Playwright) -> None:
-    hook_slack(f"{COUNT}개 자동 복권 구매 시작합니다!")
+    # hook_slack(f"{COUNT}개 자동 복권 구매 시작합니다!")
     try:
         browser = playwright.chromium.launch(headless=True)  # chrome 브라우저를 실행
         context = browser.new_context()
@@ -56,8 +60,7 @@ def run(playwright: Playwright) -> None:
         # with page.expect_navigation(url="https://ol.dhlottery.co.kr/olotto/game/game645.do"):
         with page.expect_navigation():
             page.press('form[name="jform"] >> text=로그인', "Enter")
-
-        time.sleep(5)
+        time.sleep(4)
 
         # 로그인 이후 기본 정보 체크 & 예치금 알림
         page.goto("https://dhlottery.co.kr/common.do?method=main")
@@ -70,14 +73,12 @@ def run(playwright: Playwright) -> None:
         # 예치금 잔액 부족 미리 exception
         if 1000 * int(COUNT) > money_info:
             raise Exception(
-                "예치금이 부족합니다! 충전해주세요! - https://dhlottery.co.kr/payment.do?method=payment"
+                "예치금이 부족합니다! \n충전해주세요: https://dhlottery.co.kr/payment.do?method=payment"
             )
 
         page.goto(url="https://ol.dhlottery.co.kr/olotto/game/game645.do")
         # "비정상적인 방법으로 접속하였습니다. 정상적인 PC 환경에서 접속하여 주시기 바랍니다." 우회하기
         page.locator("#popupLayerAlert").get_by_role("button", name="확인").click()
-        print(page.content())
-
         page.click("text=자동번호발급")
 
         # 구매할 개수를 선택
@@ -92,8 +93,25 @@ def run(playwright: Playwright) -> None:
         # assert page.url == "https://el.dhlottery.co.kr/game/TotalGame.jsp?LottoId=LO40"
 
         hook_slack(
-            f"{COUNT}개 복권 구매 성공! - 확인하러가기: https://dhlottery.co.kr/myPage.do?method=notScratchListView"
+            f"{COUNT}개 복권 구매 성공! \n자세하게 확인하기: https://dhlottery.co.kr/myPage.do?method=notScratchListView"
         )
+
+        # 오늘 구매한 복권 결과
+        now_date = __get_now().date().strftime("%Y%m%d")
+        page.goto(
+            url=f"https://dhlottery.co.kr/myPage.do?method=lottoBuyList&searchStartDate={now_date}&searchEndDate={now_date}&lottoId=&nowPage=1"
+        )
+        a_tag_href = page.query_selector(
+            "tbody > tr:nth-child(1) > td:nth-child(4) > a"
+        ).get_attribute("href")
+        detail_info = re.findall(r"\d+", a_tag_href)
+        page.goto(
+            url=f"https://dhlottery.co.kr/myPage.do?method=lotto645Detail&orderNo={detail_info[0]}&barcode={detail_info[1]}&issueNo={detail_info[2]}"
+        )
+        result_msg = ""
+        for result in page.query_selector_all("div.selected li"):
+            result_msg += ", ".join(result.inner_text().split("\n")) + "\n"
+        hook_slack(f"이번주 나의 행운의 번호는?!\n{result_msg}")
 
         # End of Selenium
         context.close()

@@ -17,11 +17,15 @@ SLACK_BOT_TOKEN = sys.argv[3]
 SLACK_CHANNEL = sys.argv[4]
 
 
-def hook_slack(message: str) -> Response:
+def __get_now() -> datetime:
     now_utc = datetime.utcnow()
     korea_timezone = timedelta(hours=9)
     now_korea = now_utc + korea_timezone
-    korea_time_str = now_korea.strftime("%Y-%m-%d %H:%M:%S")
+    return now_korea
+
+
+def hook_slack(message: str) -> Response:
+    korea_time_str = __get_now().strftime("%Y-%m-%d %H:%M:%S")
 
     payload = {
         "text": f"> {korea_time_str} *로또 자동 구매 봇 알림* \n {message}",
@@ -52,8 +56,7 @@ def run(playwright: Playwright) -> None:
         # with page.expect_navigation(url="https://ol.dhlottery.co.kr/olotto/game/game645.do"):
         with page.expect_navigation():
             page.press('form[name="jform"] >> text=로그인', "Enter")
-
-        time.sleep(5)
+        time.sleep(4)
 
         # 당첨 결과 및 번호 확인
         page.goto("https://dhlottery.co.kr/common.do?method=main")

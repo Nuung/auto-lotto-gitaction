@@ -44,11 +44,17 @@
 7. `action-result.yml` 은 이제 발표된 추첨 번호를 slack을 통해 전달해준다. 20시 35분경 발표가 나는 점, 업데이트가 나중에 되는점을 참작해 21시 50분경에 러닝하게 했다.
 
 
+## To develop something more in the local
+
+1. 가상환경 구성을 추천한다. 편한대로 구성하면 된다, ex. `python3 -m venv .venv`
+2. `requirements.txt` file을 install 한다.
+3. `playwright install` 를 해준다. 기본 준비 끝 - https://playwright.dev/
+4. 디버깅 모드 셀레니움이 익숙한 사람은 그렇게 사용해도 무방하다.
 
 
 ## TOBE
 - [x] 발표난 당첨 번호와 자동 비교 work flow 추가 ~~[23.06.03]~~
-- [ ] 위에 따라 당첨 여부와 quick check link hook 추가
+- [x] 랜덤으로 구매한 복권 번호, 우선 최대 5개 까지만, 번호 noti work flow 추가 ~~[23.06.25]~~
 
 ## STACK
 - python
