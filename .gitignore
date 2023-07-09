@@ -1,10 +1,6 @@
 
 #################### CUSTOM ####################
-**/kafka/*
-**/zookeeper/*
-**/mongodb/data/*
-**/mongodb/log/*
-**/nohub.log
+test.py
 
 #################### AUTO MAKEING ####################
 # Byte-compiled / optimized / DLL files
