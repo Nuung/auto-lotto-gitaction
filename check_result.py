@@ -40,7 +40,7 @@ def hook_slack(message: str) -> Response:
     korea_time_str = __get_now().strftime("%Y-%m-%d %H:%M:%S")
 
     payload = {
-        "text": f"> {korea_time_str} *로또 자동 구매 봇 알림* \n {message}",
+        "text": f"> {korea_time_str} *로또 자동 구매 봇 알림* \n{message}",
         "channel": SLACK_CHANNEL,
     }
     headers = {
