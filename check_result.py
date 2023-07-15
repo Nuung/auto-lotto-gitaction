@@ -2,6 +2,7 @@ import re
 import sys
 import time
 from datetime import datetime, timedelta
+from typing import List
 
 from requests import post, Response
 from playwright.sync_api import Playwright, sync_playwright
@@ -25,7 +26,7 @@ def __get_now() -> datetime:
     return now_korea
 
 
-def __check_lucky_number(lucky_numbers: list[str], my_numbers: list[str]) -> str:
+def __check_lucky_number(lucky_numbers: List[str], my_numbers: List[str]) -> str:
     return_msg = ""
     for my_num in my_numbers:
         if my_num in lucky_numbers:
