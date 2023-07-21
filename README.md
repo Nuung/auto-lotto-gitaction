@@ -63,8 +63,8 @@
 
 ## STACK
 - python
+    - python 3.8+
     - Playwright & selenium (chrome driver)
     - requests
-    - playwright
 - lint: flask8 & black
 - github action (action.yml)
