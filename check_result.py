@@ -92,9 +92,17 @@ def run(playwright: Playwright) -> None:
         page.goto(
             url=f"https://dhlottery.co.kr/myPage.do?method=lottoBuyList&searchStartDate={now_date}&searchEndDate={now_date}&lottoId=&nowPage=1"
         )
-        a_tag_href = page.query_selector(
-            "tbody > tr:nth-child(1) > td:nth-child(4) > a"
-        ).get_attribute("href")
+
+        # 날짜 잘못 잡음
+        try:
+            a_tag_href = page.query_selector(
+                "tbody > tr:nth-child(1) > td:nth-child(4) > a"
+            ).get_attribute("href")
+        except AttributeError as exc:
+            raise Exception(
+                f"{exc} 에러 발생했습니다. now_date 값이 잘못세팅된 것 같습니다. 구매한 복권의 날짜와 결과 체크의 날짜가 동일한가요?"
+            )
+
         detail_info = re.findall(r"\d+", a_tag_href)
         page.goto(
             url=f"https://dhlottery.co.kr/myPage.do?method=lotto645Detail&orderNo={detail_info[0]}&barcode={detail_info[1]}&issueNo={detail_info[2]}"
