@@ -51,6 +51,6 @@ trio-websocket==0.10.3
 twython==3.9.1
 typing_extensions==4.6.2
 uritemplate==4.1.1
-urllib3==1.26.17
+urllib3==1.26.18
 virtualenv==20.23.0
 wsproto==1.2.0
