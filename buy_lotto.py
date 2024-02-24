@@ -21,6 +21,16 @@ SLACK_CHANNEL = sys.argv[4]
 COUNT = sys.argv[5]
 
 
+class BalanceError(Exception):
+    def __init__(self, message="An error occurred", code=None):
+        self.message = message
+        self.code = code
+        super().__init__(self.message)
+
+    def __str__(self):
+        return f"{self.message} - Code: {self.code}" if self.code else self.message
+
+
 def __get_now() -> datetime:
     now_utc = datetime.utcnow()
     korea_timezone = timedelta(hours=9)
@@ -31,8 +41,45 @@ def __get_now() -> datetime:
 def hook_slack(message: str) -> Response:
     korea_time_str = __get_now().strftime("%Y-%m-%d %H:%M:%S")
     payload = {
-        "text": f"> {korea_time_str} *로또 자동 구매 봇 알림* \n {message}",
+        "text": f"> {korea_time_str} *로또 자동 구매 봇 알림* \n{message}",
         "channel": SLACK_CHANNEL,
+    }
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {SLACK_BOT_TOKEN}",
+    }
+    res = post(SLACK_API_URL, json=payload, headers=headers)
+    return res
+
+
+def hook_slack_btn() -> Response:
+    korea_time_str = __get_now().strftime("%Y-%m-%d %H:%M:%S")
+    payload = {
+        "channel": SLACK_CHANNEL,
+        "blocks": [
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": f"> {korea_time_str} *로또 자동 구매 봇 알림* \n예치금이 부족합니다! 충전을 해주세요!",
+                },
+            },
+            {
+                "type": "actions",
+                "elements": [
+                    {
+                        "type": "button",
+                        "text": {
+                            "type": "plain_text",
+                            "text": "충전하러 가기",  # 버튼에 표시될 텍스트
+                            "emoji": True,
+                        },
+                        "url": "https://dhlottery.co.kr/payment.do?method=payment",  # 사용자를 리디렉션할 URL
+                        "action_id": "button_action",
+                    }
+                ],
+            },
+        ],
     }
     headers = {
         "Content-Type": "application/json",
@@ -72,9 +119,7 @@ def run(playwright: Playwright) -> None:
 
         # 예치금 잔액 부족 미리 exception
         if 1000 * int(COUNT) > money_info:
-            raise Exception(
-                "예치금이 부족합니다! \n충전해주세요: https://dhlottery.co.kr/payment.do?method=payment"
-            )
+            raise BalanceError()
 
         page.goto(url="https://ol.dhlottery.co.kr/olotto/game/game645.do")
         # "비정상적인 방법으로 접속하였습니다. 정상적인 PC 환경에서 접속하여 주시기 바랍니다." 우회하기
@@ -112,15 +157,14 @@ def run(playwright: Playwright) -> None:
         for result in page.query_selector_all("div.selected li"):
             result_msg += ", ".join(result.inner_text().split("\n")) + "\n"
         hook_slack(f"이번주 나의 행운의 번호는?!\n{result_msg}")
-
+    except BalanceError:
+        hook_slack_btn()
+    except Exception as exc:
+        hook_slack(exc)
+    finally:
         # End of Selenium
         context.close()
         browser.close()
-    except Exception as exc:
-        hook_slack(exc)
-        context.close()
-        browser.close()
-        raise exc
 
 
 with sync_playwright() as playwright:

@@ -70,10 +70,14 @@ def run(playwright: Playwright) -> None:
             page.press('form[name="jform"] >> text=로그인', "Enter")
         time.sleep(4)
 
-        # 당첨 결과 및 번호 확인
+        # 당첨 결과 및 번호 확인, parsing issue 때문에 3중 retry
         page.goto("https://dhlottery.co.kr/common.do?method=main")
-        result_info = page.query_selector("#article div.content").inner_text()
-        result_info = result_info.split("이전")[0].replace("\n", " ")
+        retry_cnt = 0
+        result_info = page.query_selector("#article div.content")
+        while not result_info and retry_cnt < 3:
+            result_info = page.query_selector("#article div.content")
+            retry_cnt += 1
+        result_info = result_info.inner_text().split("이전")[0].replace("\n", " ")
         hook_slack(f"로또 결과: {result_info}")
 
         # 번호 추출하기
