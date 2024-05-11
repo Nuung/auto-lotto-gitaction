@@ -27,6 +27,7 @@ jobs:
           pip install pillow
           pip install gspread
           pip install beautifulsoup4
+          pip install lxml
           pip install pytz
           pip install --upgrade google-api-python-client oauth2client
           pip install playwright
