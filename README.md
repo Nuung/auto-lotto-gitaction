@@ -10,7 +10,9 @@
 - https://velog.io/@king/githubactions-lotto 원작자분 벨로그입니다!
   - 해당 레포는 원작 소스 코드 기반으로 `(1)public` 하게 사용할 수 있게,
   - `(2) slack hook (optional)`
-  - `(3) 결과/기타 info check` 첨가 정도 추가 되었습니다.
+  - `(3) 결과 check`
+  - `(4) 기타 편의 기능`
+  - 정도 추가 되었습니다.
 - public 으로 공유할 수 있게 모든 민감 정보 action secrets 값으로 관리
 - slack bot을 통해 slack noti (hook) 전달함
 - **_예치금 필요합니다._**
@@ -34,9 +36,9 @@
 
 ![](./imgs/img2.png)
 
-- slack bot token은 `xoxb` 로 시작하는, bot OAuth token값이다.
-- slack channel 값은 추가한 slack bot을 초대한 그 채널값이 필요하다.
-- BUY_COUNT가 구매할 복권 수 세팅 값이다.
+- `SLACK_BOT_TOKEN` 은 `xoxb` 로 시작하는, bot OAuth token값이다.
+- `SLACK_CHANNEL` 값은 추가한 slack bot을 초대한 그 채널값이 필요하다. 이게 채널ID 값이거나 채널이름 (#이 안붙은) 값이면 된다.
+- `BUY_COUNT` 가 구매할 복권 수 세팅 값이다.
 - 그 외 user값은 https://dhlottery.co.kr/common.do?method=main 여기 회원가입한 정보를 넣자. **_절대 절대 절대 노출 안되게 조심_**
 
 #### 6. 위 세팅 완료 후 test를 위해 `action.yml` 에서 `on: [push]` 로 바꾸고 push를 해보자
@@ -58,15 +60,15 @@
 3. `playwright install` 를 해준다. 기본 준비 끝 - https://playwright.dev/
 4. 디버깅 모드 셀레니움이 익숙한 사람은 그렇게 사용해도 무방하다.
 
-## TODO
+## UPDATE LOG
 
 - [x] 발표난 당첨 번호와 자동 비교 work flow 추가 ~~[23.06.03]~~
 - [x] 랜덤으로 구매한 복권 번호, 우선 최대 5개 까지만, 번호 noti work flow 추가 ~~[23.06.25]~~
 - [x] 구매한 복권 당첨 여부 가져오기 ~~[23.07.09]~~
 - [x] result parsing issue 에서 retry 추가 ~~[24.02.24]~~
 - [x] 특정 이슈는 slack을 통해서 빠르게 핸들링 할 수 있게 템플릿 ~~[24.02.24]~~
-- [ ] 선호하는 번호 넘버링 골라서 고를 수 있게
-- [ ] 여지껏 고른 랜덤 번호 저장하도록 중앙저장소 & 데이터 분석 기반
+- [x] 구매한 번호 체크하는 페이지 변동, POST 로 API 스펙이 바뀜, 대응 개발 ~~[24.05.11]~~
+- [ ] 보너스 번호를 일반 번호와 같게 판단하는 경우 처리
 
 ## STACK
 

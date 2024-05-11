@@ -1,10 +1,12 @@
 import re
 import sys
 import time
-from datetime import datetime, timedelta
+from datetime import datetime
 
-from requests import post, Response
+import pytz
+from requests import post, Response, Session
 from playwright.sync_api import Playwright, sync_playwright
+from bs4 import BeautifulSoup
 
 RUN_FILE_NAME = sys.argv[0]
 
@@ -31,15 +33,15 @@ class BalanceError(Exception):
         return f"{self.message} - Code: {self.code}" if self.code else self.message
 
 
-def __get_now() -> datetime:
-    now_utc = datetime.utcnow()
-    korea_timezone = timedelta(hours=9)
-    now_korea = now_utc + korea_timezone
-    return now_korea
+def get_now() -> datetime:
+    # 한국 시간대 객체 생성
+    korea_tz = pytz.timezone("Asia/Seoul")
+    korea_time = datetime.now(pytz.utc).astimezone(korea_tz)
+    return korea_time
 
 
 def hook_slack(message: str) -> Response:
-    korea_time_str = __get_now().strftime("%Y-%m-%d %H:%M:%S")
+    korea_time_str = get_now().strftime("%Y-%m-%d %H:%M:%S")
     payload = {
         "text": f"> {korea_time_str} *로또 자동 구매 봇 알림* \n{message}",
         "channel": SLACK_CHANNEL,
@@ -53,7 +55,7 @@ def hook_slack(message: str) -> Response:
 
 
 def hook_slack_btn() -> Response:
-    korea_time_str = __get_now().strftime("%Y-%m-%d %H:%M:%S")
+    korea_time_str = get_now().strftime("%Y-%m-%d %H:%M:%S")
     payload = {
         "channel": SLACK_CHANNEL,
         "blocks": [
@@ -90,8 +92,11 @@ def hook_slack_btn() -> Response:
 
 
 def run(playwright: Playwright) -> None:
-    # hook_slack(f"{COUNT}개 자동 복권 구매 시작합니다!")
     try:
+        # ================================================================ #
+        # 초기 세팅 및 로그인
+        # ================================================================ #
+
         browser = playwright.chromium.launch(headless=True)  # chrome 브라우저를 실행
         context = browser.new_context()
 
@@ -121,6 +126,10 @@ def run(playwright: Playwright) -> None:
         if 1000 * int(COUNT) > money_info:
             raise BalanceError()
 
+        # ================================================================ #
+        # 구매하기
+        # ================================================================ #
+
         page.goto(url="https://ol.dhlottery.co.kr/olotto/game/game645.do")
         # "비정상적인 방법으로 접속하였습니다. 정상적인 PC 환경에서 접속하여 주시기 바랍니다." 우회하기
         page.locator("#popupLayerAlert").get_by_role("button", name="확인").click()
@@ -141,14 +150,41 @@ def run(playwright: Playwright) -> None:
             f"{COUNT}개 복권 구매 성공! \n자세하게 확인하기: https://dhlottery.co.kr/myPage.do?method=notScratchListView"
         )
 
-        # 오늘 구매한 복권 결과
-        now_date = __get_now().date().strftime("%Y%m%d")
-        page.goto(
-            url=f"https://dhlottery.co.kr/myPage.do?method=lottoBuyList&searchStartDate={now_date}&searchEndDate={now_date}&lottoId=&nowPage=1"
-        )
-        a_tag_href = page.query_selector(
+        # ================================================================ #
+        # 오늘 구매한 복권 번호 확인하기
+        # ================================================================ #
+        cookies = page.context.cookies()
+        session = Session()
+        for cookie in cookies:
+            session.cookies.set(
+                cookie["name"], cookie["value"], domain=cookie["domain"]
+            )
+
+        url = "https://dhlottery.co.kr/myPage.do"
+        querystring = {"method": "lottoBuyList"}
+        now_date = get_now().date().strftime("%Y%m%d")
+        payload = f"searchStartDate={now_date}&searchEndDate={now_date}&winGrade=2"
+        headers = {
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+            "Accept-Language": "ko,en;q=0.9,ko-KR;q=0.8,en-US;q=0.7",
+            "Cache-Control": "max-age=0",
+            "Connection": "keep-alive",
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Origin": "https://dhlottery.co.kr",
+            "Referer": "https://dhlottery.co.kr/myPage.do?method=lottoBuyListView",
+            "Sec-Fetch-Dest": "iframe",
+            "Sec-Fetch-Mode": "navigate",
+            "Sec-Fetch-Site": "same-origin",
+            "Sec-Fetch-User": "?1",
+            "Upgrade-Insecure-Requests": "1",
+            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+            "sec-ch-ua-mobile": "?0",
+        }
+        res = session.post(url, data=payload, headers=headers, params=querystring)
+        html = BeautifulSoup(res.content, "lxml")
+        a_tag_href = html.select_one(
             "tbody > tr:nth-child(1) > td:nth-child(4) > a"
-        ).get_attribute("href")
+        ).get("href")
         detail_info = re.findall(r"\d+", a_tag_href)
         page.goto(
             url=f"https://dhlottery.co.kr/myPage.do?method=lotto645Detail&orderNo={detail_info[0]}&barcode={detail_info[1]}&issueNo={detail_info[2]}"
